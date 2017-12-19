@@ -1,9 +1,9 @@
-# cmsc430_final_project
+# CMSC430 Final Project
 
 ## Project Description
 This project is a compiler for a subset of Scheme, written in Racket. The 
 compiler takes in files with the extenstion .scm, then sends the program though 
-several compiler passes, top-level pattern matching, desugaring,
+several compiler passes: top-level pattern matching, desugaring,
 assignment-conversion, alphatization, administrative normal form-conversion, 
 continuation-passing style conversion, closure-conversion and finally 
 llvm-emission. 
@@ -26,9 +26,9 @@ order of subexpressions by administratively let-binding then to temporary
 variables. Let forms with multiple bindings are also falttened into multiple let
 bindings. 
 
-Next, in closure-passing style conversion, the code is converted to
-closure-passing style. Now, a continuation is explicitly passes and no function
-call ever returns. We not can remove call/cc from the language as well. 
+Next, in continuation-passing style conversion, the code is converted to
+continuation-passing style. Now, a continuation is explicitly passed and no function
+call ever returns. We now can remove call/cc from the language as well. 
 
 In the closure-conversion pass, lambda abstractions are removed and replaced
 with make-closure and env-ref forms. Applications are also transfored with
@@ -44,7 +44,7 @@ using clang 3.9.
 ## Usage
 
 tests.rkt is the interface through which you can compile code. It makes use of
-the files top-level.rkt, desugar.rkt, cps.rkt, closure-convert.rkt, utils.rkt
+the files top-level.rkt, desugar.rkt, cps.rkt, closure-convert.rkt, utils.rkt,
 header.cpp and uthash.h.
 
 It is designed to compile programs that are located according to a specified
@@ -74,102 +74,101 @@ was "example.scm", a binary in your current directory will be created called
 
 ## Accepted Grammar
 
-The following is the grammar that the compiler suppoerts:
+The following is the grammar that the compiler supports:
 
-e ::= (define x e)
-    | (define (x x ... defaultparam ...) e ...+)
-    | (define (x x ... . x) e ...+)
-    | (letrec* ([x e] ...) e ...+)
-    | (letrec ([x e] ...) e ...+)
-    | (let* ([x e] ...) e ...+)
-    | (let ([x e] ...) e ...+)
-    | (let x ([x e] ...) e ...+)
-    | (lambda (x ... defaultparam ...) e ...+)
-    | (lambda x e ...+)
-    | (lambda (x ...+ . x) e ...+)
-    | (dynamic-wind e e e)
-    | (guard (x cond-clause ...) e ...+)
-    | (raise e)
-    | (delay e)
-    | (force e)
-    | (and e ...)
-    | (or e ...)
-    | (match e match-clause ...)
-    | (cond cond-clause ...)
-    | (case e case-clause ...)
-    | (if e e e)
-    | (when e e ...+)
-    | (unless e e ...+)
-    | (set! x e)
-    | (begin e ...+)
-    | (call/cc e)
-    | (apply e e)
-    | (e e ...)
-    | x
-    | op
-    | (quasiquote qq)
-    | (quote dat)
-    | nat | string | #t | #f
-
-cond-clause ::= (e) | (e e e ...) | (else e e ...)
-case-clause ::= ((dat ...) e e ...) | (else e e ...)
-match-clause ::= (pat e e ...) | (else e e ...)
-;in all cases, else clauses must come last
-dat is a datum 
-x is a variable 
-defaultparam ::= (x e)
-op is a symbol representing one of the primitive operation supported
-qq ::= e | dat | (unquote qq) | (unquote e) | (quasiquote qq)
-     | (qq ...+) | (qq ...+ . qq)
-pat ::= nat | string | #t | #f | (quote dat) | x | (? e pat) | (cons pat pat) |
-(quasiquote qqpat)
-qqpat ::= e | dat | (unquote qqpat) | (unquote pat) | (quasiquote qq)
-        | (qq ...+) | (qq ...+ . qq)
+e ::= (define x e)  
+	| (define (x x ... defaultparam ...) e ...+)  
+	| (define (x x ... . x) e ...+)  
+	| (letrec* ([x e] ...) e ...+)  
+	| (letrec ([x e] ...) e ...+)  
+	| (let* ([x e] ...) e ...+)  
+	| (let ([x e] ...) e ...+)  
+	| (let x ([x e] ...) e ...+)  
+	| (lambda (x ... defaultparam ...) e ...+)	
+	| (lambda x e ...+)  
+	| (lambda (x ...+ . x) e ...+)  
+	| (dynamic-wind e e e)  
+	| (guard (x cond-clause ...) e ...+)  
+	| (raise e)  
+	| (delay e)  
+	| (force e)  
+	| (and e ...)  
+	| (or e ...)  
+	| (match e match-clause ...)  
+	| (cond cond-clause ...)  
+	| (case e case-clause ...)  
+	| (if e e e)  
+	| (when e e ...+)  
+	| (unless e e ...+)  
+	| (set! x e)  
+	| (begin e ...+)  
+	| (call/cc e)  
+	| (apply e e)  
+	| (e e ...)  
+	| x  
+	| op  
+	| (quasiquote qq)  
+	| (quote dat)  
+	| nat | string | #t | #f
+  
+cond-clause ::= (e) | (e e e ...) | (else e e ...)  
+case-clause ::= ((dat ...) e e ...) | (else e e ...)  
+match-clause ::= (pat e e ...) | (else e e ...)  
+;in all cases, else clauses must come last  
+dat is a datum   
+x is a variable   
+defaultparam ::= (x e)  
+op is a symbol representing one of the primitive operation supported  
+qq ::= e | dat | (unquote qq) | (unquote e) | (quasiquote qq)  
+	| (qq ...+) | (qq ...+ . qq)  
+pat ::= nat | string | #t | #f | (quote dat) | x | (? e pat) | (cons pat pat) |(quasiquote qqpat)  
+qqpat ::= e | dat | (unquote qqpat) | (unquote pat) | (quasiquote qq)  
+	| (qq ...+) | (qq ...+ . qq)
 
 ## Standard Primitive Operations Supported
 
-(= x y) : Int ->  Int -> Boolean
+(= x y) : Int ->  Int -> Boolean  
 Returns #t if the arguments are numerically equal, #f otherwise.
 
-(> x vs ...) : Int -> Int... -> Boolean
+(> x vs ...) : Int -> Int... -> Boolean  
 Returns #t if the arguments are given in an order strictly decreasing, #f
 otherwise. 
 
-(< x vs ...) : Int -> Int... -> Boolean
+(< x vs ...) : Int -> Int... -> Boolean  
 Returns #t if the arguments are given in an order strictly increasing, #f
 otherwise. 
 
-(<= x vs ...) : Int -> Int... -> Boolean
+(<= x vs ...) : Int -> Int... -> Boolean  
 Returns #t if the arguemtns are given in an order non-decreasing, #f otherwise. 
 
-(>= x vs ...): Int , Int... -> Boolean
+(>= x vs ...): Int , Int... -> Boolean  
 Returns #t if the arguments are given in an order non-increasing, #f othersise. 
 
-(\+ vs ...) : Int... -> Int
+(\+ vs ...) : Int... -> Int  
 Returns the sum of the arguments, 0 if no arguments are provided. 
 
-(\- x vs ...) : Int -> Int... -> Int
+(\- x vs ...) : Int -> Int... -> Int  
 Returns the result of subtracting from the first argument, each of the
 subsequent arguments in order. 
 
-(\* vs ...) : Int... -> Int
+(\* vs ...) : Int... -> Int  
 Returns the product of the arguments, multiplied in order. If there are no
 argumetns, 1 is returned. 
 
-(/ x vs ...) : Int , Int... -> Int
+(/ x vs ...) : Int , Int... -> Int  
 Returns the result of dividing the first integer by each subsequent integer. 
 Fails with "Divide By Zero Exception" if one of the subsequent integers is 0. 
 
-(null? p) : Any -> boolean
+(null? p) : Any -> boolean  
 Returns #t if given the empty list, #f otherwise.
 
-(car p) : Pair -> Any
+(car p) : Pair -> Any  
 Returns the first element of the given pair.
 
-(cdr p) : Pair -> Any
+(cdr p) : Pair -> Any  
 Returns the second element of the given pair.
 
-(cons x y) : Any -> Any -> Pair
+(cons x y) : Any -> Any -> Pair  
 Returns a new Pair with the fist element being the first parameter and the
 second element being the second parameter. 
 
@@ -177,16 +176,16 @@ second element being the second parameter.
 
 ### Mutable Hash tables
 
-(make-hash l) : List of Pairs of Any -> Hash
+(make-hash [l]) : [List of Pairs of Any] -> Hash
 Returns a hash table initialized based on teh contents of the list. For each
 element of the list, an entry is put into the table where the car of the element
-is the key and the cdr of the element is the corresponding value. While scheme
-supports this as an optional parameter, currently our compiler does not. It also
-does not support the empty list as a parameter. 
+is the key and the cdr of the element is the corresponding value. If no list is
+provided, then an empty hash is returned
 
-(hash-ref h k) : Hash -> Any -> Any
+(hash-ref h k [f]) : Hash -> Any -> [Any] -> Any
 Returns the value associated with key k in the Hash h. If the key is not in the
-hash, a runtime error is thrown. 
+hash and an f is not provided, a runtime error is thrown. If the ke is not in
+the hash and an f is provided, f is returned. 
 
 (hash-set! h k v) : Hash -> Any -> Any -> void
 Mutably changes the hash by creating or replacing an entry in the Hash h, where
@@ -210,13 +209,17 @@ tests/release/ they are uninitialized-0.scm and uninitialized-1.scm
    in the bounds of the specified vector, an error is thrown. The relevant tests
 are located in tests/release/ they are vector-ob-0.scm and vector-ob-1.scm
 5. Existing Hash Keys: If in a call to hash-ref, the given key is not in the
-   hash, an error is thrown. The relevant tests are located in tests/release/
-they are hash-no-key-0.scm and hash-no-key-1.scm
+   hash, an error may be thrown. An optional parameter to hash-ref can be given.
+If this optional parameter is given and the key is not found, the flag is
+returned to allow the programmer to handle the missing key. If the flag is not
+given and the key is not found, the error is thrown. The relevant tests are 
+located in tests/release/they are hash-no-key-0.scm, hash-no-key-1.scm and 
+hash-no-key-flag.scm
 
-Some classes of runtime errors that are not handled by our compiler are:
+Some classes of runtime errors that are not handled by the compiler are:
 
 1. Functions being provided too few/many arguments
-2. Primitive operations being provided the correct number of arguments
+2. Primitive operations being provided too few/many arguments
 3. Non-Function values being applied
 
 It is left to the programmar to ensure that these kinds of errors do not exist
