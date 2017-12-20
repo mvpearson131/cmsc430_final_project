@@ -131,6 +131,9 @@ qqpat ::= e | dat | (unquote qqpat) | (unquote pat) | (quasiquote qq)
 
 ## Standard Primitive Operations Supported
 
+(not *v*) : Any -> Boolean  
+Returns #t if *v* is #f, #f otherwise.
+
 (= *x* *y*) : Int ->  Int -> Boolean  
 Returns #t if the arguments are numerically equal, #f otherwise.
 
