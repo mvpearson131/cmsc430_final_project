@@ -23,7 +23,7 @@ any shadowing of variables.
 
 In administrative normal form-conversion, we enforce an explicit evaluation
 order of subexpressions by administratively let-binding them to temporary
-variables. Let forms with multiple bindings are also falttened into multiple let
+variables. Let forms with multiple bindings are also flattened into multiple let
 bindings. 
 
 Next, in continuation-passing style conversion, the code is converted to
@@ -114,7 +114,7 @@ e ::= (define x e)
 cond-clause ::= (e) | (e e e ...) | (else e e ...)  
 case-clause ::= ((dat ...) e e ...) | (else e e ...)  
 match-clause ::= (pat e e ...) | (else e e ...)  
-;in all cases, else clauses must come last  
+in all cases, else clauses must come last  
 dat is a datum   
 x is a variable   
 defaultparam ::= (x e)  
@@ -127,69 +127,69 @@ qqpat ::= e | dat | (unquote qqpat) | (unquote pat) | (quasiquote qq)
 
 ## Standard Primitive Operations Supported
 
-(= x y) : Int ->  Int -> Boolean  
+(= *x* *y*) : Int ->  Int -> Boolean  
 Returns #t if the arguments are numerically equal, #f otherwise.
 
-(> x vs ...) : Int -> Int... -> Boolean  
+(> *x* *vs* ...) : Int -> Int... -> Boolean  
 Returns #t if the arguments are given in an order strictly decreasing, #f
 otherwise. 
 
-(< x vs ...) : Int -> Int... -> Boolean  
+(< *x* *vs* ...) : Int -> Int... -> Boolean  
 Returns #t if the arguments are given in an order strictly increasing, #f
 otherwise. 
 
-(<= x vs ...) : Int -> Int... -> Boolean  
-Returns #t if the arguemtns are given in an order non-decreasing, #f otherwise. 
+(<= *x* *vs* ...) : Int -> Int... -> Boolean  
+Returns #t if the arguments are given in an order non-decreasing, #f otherwise. 
 
-(>= x vs ...): Int , Int... -> Boolean  
+(>= *x* *vs* ...): Int , Int... -> Boolean  
 Returns #t if the arguments are given in an order non-increasing, #f othersise. 
 
-(\+ vs ...) : Int... -> Int  
-Returns the sum of the arguments, 0 if no arguments are provided. 
+(\+ *vs* ...) : Int... -> Int  
+Returns the sum of *vs*, 0 if no arguments are provided. 
 
-(\- x vs ...) : Int -> Int... -> Int  
-Returns the result of subtracting from the first argument, each of the
-subsequent arguments in order. 
+(\- *x* *vs* ...) : Int -> Int... -> Int  
+Returns the result of subtracting from *x*, each of the
+*vs*. 
 
-(\* vs ...) : Int... -> Int  
-Returns the product of the arguments, multiplied in order. If there are no
-argumetns, 1 is returned. 
+(\* *vs* ...) : Int... -> Int  
+Returns the product of the *vs*, multiplied in order. If there are no
+arguments, 1 is returned. 
 
-(/ x vs ...) : Int , Int... -> Int  
-Returns the result of dividing the first integer by each subsequent integer.
+(/ *x* *vs* ...) : Int , Int... -> Int  
+Returns the result of dividing *x* by each of the *vs* in order.
 Throws "library run-time error: Divide By Zero Exception" if one of the
 subsequent integers is 0. 
 
-(null? p) : Any -> boolean  
-Returns #t if given the empty list, #f otherwise.
+(null? *p*) : Any -> boolean  
+Returns #t if *p* is the the empty list, #f otherwise.
 
-(car p) : Pair -> Any  
-Returns the first element of the given pair.
+(car *p*) : Pair -> Any  
+Returns the first element of Pair *p*.
 
-(cdr p) : Pair -> Any  
-Returns the second element of the given pair.
+(cdr *p*) : Pair -> Any  
+Returns the second element of Pair *p*.
 
-(cons x y) : Any -> Any -> Pair  
-Returns a new Pair with the fist element being the first parameter and the
-second element being the second parameter. 
+(cons *x* *y*) : Any -> Any -> Pair  
+Returns a new Pair with the fist element being *x* and the
+second element being *y*. 
 
-(vector vs ...) : Any ... -> Vector  
-Returns a new mutable vector, with as many slots as provided vs, where the slots
-are initialized to contain the vs in order. 
+(vector *vs* ...) : Any ... -> Vector  
+Returns a new mutable vector, with as many slots as provided *vs*, where the slots
+are initialized to contain the *vs* in order. 
 
-(make-vector s [v]) : Int -> Any -> Vector  
-Returns a new mutable vector with s slots. If v is provided, all the slots are
-initialize to v, otherwise they are initialized to 0. 
+(make-vector *s* [*v*]) : Int -> Any -> Vector  
+Returns a new mutable vector with *s* slots. If *v* is provided, all the slots are
+initialize to *v*, otherwise they are initialized to 0. 
 
-(vector-ref v p) : Vector -> Int -> Any  
-Returns the element in slot p of Vector v. The first slot is position 0 and the
+(vector-ref *v* *p*) : Vector -> Int -> Any  
+Returns the element in slot *p* of Vector *v*. The first slot is position 0 and the
 last slot is one less than the total number of slots. 
-If p is not a valid slot number of v, "library run-time error: Vector-ref: Index 
+If *p* is not a valid slot number of *v*, "library run-time error: Vector-ref: Index 
 Out of bounds" is thrown. 
 
-(vector-set! v p x) : Vector -> Int -> Any -> Void  
-Mutably changes the vector by setting the setting the value of the slot at
-position p in Vector v to the value x. If p is not a valid slot number of v, 
+(vector-set! *v* *p* *x*) : Vector -> Int -> Any -> Void  
+Mutably changes the vector by setting the value of the slot at
+position *p* in Vector *v* to the value *x*. If *p* is not a valid slot number of *v*, 
 "library run-time error: Vector-ref: Index 
 Out of bounds" is thrown.
 
@@ -197,16 +197,17 @@ Out of bounds" is thrown.
 
 ### Mutable Hash tables
 
-(make-hash [l]) : [List of Pairs of Any] -> Hash  
-Returns a hash table initialized based on teh contents of the list. For each
-element of the list, an entry is put into the table where the car of the element
-is the key and the cdr of the ehrhlement is the corresponding value. If no list is
-provided, then an empty hash is returned
+(make-hash [*l*]) : [List of Pairs of Any] -> Hash  
+Returns a hash table initialized based on the contents of *l*. For each
+element of *l*, an entry is put into the table where the car of the element
+is the key and the cdr of the element is the corresponding value. If no *l* is
+provided, then an empty hash is returned.
 
-(hash-ref h k [f]) : Hash -> Any -> [Any] -> Any  
-Returns the value associated with key k in the Hash h. If the key is not in the
-hash and an f is not provided, a runtime error is thrown. If the key is not in
-the hash and an f is provided, f is returned. 
+(hash-ref *h* *k* [*f*]) : Hash -> Any -> [Any] -> Any  
+Returns the value associated with key *k* in the Hash *h*. If the key is not in the
+hash and an *f* is not provided, "library run-time error: Key is 
+not found in the hash" is thrown. If the key is not in
+the hash and an *f* is provided, *f* is returned. 
 
 (hash-set! h k v) : Hash -> Any -> Any -> Void  
 Mutably changes the hash by creating or replacing an entry in the Hash h, where
@@ -239,7 +240,8 @@ not found in the hash." An optional parameter to hash-ref can be given.
 If this optional parameter is given and the key is not found, the flag is
 returned to allow the programmer to handle the missing key. If the flag is not
 given and the key is not found, the error is thrown. The relevant tests are 
-located in tests/release/ they are hash-no-key-0.scm, hash-no-key-1.scm and 
+located in tests/release/ they are  
+hash-no-key-0.scm, hash-no-key-1.scm and 
 hash-no-key-flag.scm
 
 When the testing suite encounters a test that fails, the function
@@ -254,7 +256,7 @@ Some classes of runtime errors that are not handled by the compiler are:
 2. Primitive operations being provided too few/many arguments
 3. Non-Function values being applied
 
-It is left to the programmar to ensure that these kinds of errors do not exist
+It is left to the programmer to ensure that these kinds of errors do not exist
 in their code. 
 
 ## Garbage Collection
