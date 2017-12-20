@@ -417,12 +417,145 @@ u64 applyprim_vector(u64 lst)
     return ENCODE_OTHER(mem);
 }
 
+u64 prim_hash_63(u64 v)
+{
+	if ((v&7) == OTHER_TAG 
+			&& (HASH_OTHERTAG == (((my_hash*)DECODE_OTHER(v))->tag)))
+	{
+		return V_TRUE;
+	} else 
+	{
+		return V_FALSE;
+	}
+}
+
+u64 prim_hash_45has_45key_63(u64 h, u64 k)
+{
+
+	ASSERT_TAG(h, OTHER_TAG, "first argument to hash-has-key? must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
+		fatal_err("hash-has-key? not given a properly formed hash");
+
+	my_hash *hash = (my_hash*)DECODE_OTHER(h);
+
+	my_hash * s = get_val(&hash, k);
+
+	if(s == NULL)
+		return V_FALSE;
+	else
+		return V_TRUE;
+
+}
+
+u64 prim_hash_45keys_45subset_63(u64 h1, u64 h2)
+{
+	ASSERT_TAG(h1, OTHER_TAG, "first argument to hash-ref must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h1))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
+
+	ASSERT_TAG(h2, OTHER_TAG, "first argument to hash-ref must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h2))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
+
+	my_hash *hash1 = (my_hash*)DECODE_OTHER(h1);
+	//my_hash *hash2 = (my_hash*)DECODE_OTHER(h2);
+
+	my_hash *cur, *tmp;
+
+	HASH_ITER(hh, hash1, cur, tmp)
+	{
+		if(prim_hash_45has_45key_63(h2, cur->id) == V_FALSE)
+			return V_FALSE;
+	}
+
+	return V_TRUE;
+}
+
+u64 prim_hash_45count(u64 h)
+{
+	ASSERT_TAG(h, OTHER_TAG, "first argument to hash-ref must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
+
+	my_hash *hash = (my_hash*)DECODE_OTHER(h);
+
+	s64 cnt = HASH_CNT(hh, hash) - 1;
+
+	return ENCODE_INT(cnt);
+}
+
+u64 prim_hash_45empty_63(u64 h)
+{
+	ASSERT_TAG(h, OTHER_TAG, "first argument to hash-ref must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
+
+	my_hash *hash = (my_hash*)DECODE_OTHER(h);
+
+	s64 cnt = HASH_CNT(hh, hash);
+
+	if(cnt == 1)
+		return V_TRUE;
+	else 
+		return V_FALSE;
+}
+
+u64 prim_hash_45clear_33(u64 h)
+{
+	ASSERT_TAG(h, OTHER_TAG, "first argument to hash-ref must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
+
+	my_hash *hash = (my_hash*)DECODE_OTHER(h);
+
+	my_hash *cur, *tmp;
+
+	HASH_ITER(hh, hash, cur, tmp)
+	{
+		if(cur->id != V_HASH)
+		{
+			HASH_DELETE(hh, hash, cur);
+			free(cur);
+			curmem -= sizeof(my_hash);
+		}
+	}
+
+	return V_VOID;
+}
+
+u64 prim_hash_45remove_33(u64 h, u64 key)
+{
+	ASSERT_TAG(h, OTHER_TAG, "first argument to hash-ref must be a hash");
+
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
+
+	my_hash *hash = (my_hash*)DECODE_OTHER(h);
+
+	my_hash * s = get_val(&hash, key);
+
+	if(s != NULL)
+	{
+		HASH_DELETE(hh, hash, s);
+		free(s);
+		curmem -= sizeof(my_hash);
+	}
+
+	return V_VOID;
+}
+
 u64 prim_make_45hash(u64 lst)
 {
 	my_hash *hash = NULL;
 
 	//add default value to the hash to initialize it
-	add_val(&hash, HASH_OTHERTAG, 0);
+	add_val(&hash, V_HASH, 0);
 
 	u64* buffer = (u64*)malloc(512*sizeof(u64));
 	u64 l = 0;
@@ -482,15 +615,12 @@ u64 prim_hash_45set_33(u64 h, u64 key, u64 val)
 {
 	my_hash *hash = NULL;
 
-	if(h != V_HASH)
-	{
-		ASSERT_TAG(h, OTHER_TAG, "first argument to hash-ref must be a hash");
+	ASSERT_TAG(h, OTHER_TAG, "first argument to hash-ref must be a hash");
 
-		if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
-			fatal_err("hash-ref not given a properly formed hash");
+	if(HASH_OTHERTAG != (((my_hash*)DECODE_OTHER(h))->tag))
+		fatal_err("hash-ref not given a properly formed hash");
 
-		hash = (my_hash*)DECODE_OTHER(h);
-	}
+	hash = (my_hash*)DECODE_OTHER(h);
 	
 	add_val(&hash, key, val);
 

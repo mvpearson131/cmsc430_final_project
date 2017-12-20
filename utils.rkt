@@ -50,7 +50,7 @@
                      vector? vector make-vector vector-ref vector-set! vector-length
                      set set->list list->set set-add set-union set-count set-first set-rest set-remove
                      make-hash hash-set! hash hash-ref hash-set hash-count hash-keys hash-has-key? hash?
-                     list? void? promise? procedure? number? integer?
+                     hash-empty? hash-clear! hash-remove! hash-keys-subset? list? void? promise? procedure? number? integer?
                      error void print display write exit halt
                      eq? eqv? equal? not))
 (define ok-set (list->set (string->list "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$")))

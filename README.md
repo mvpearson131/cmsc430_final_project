@@ -217,6 +217,24 @@ the hash and an *f* is provided, *f* is returned.
 Mutably changes the hash by creating or replacing an entry in the Hash *h*, where
 *k* is the new key and *v* is the new value. 
 
+(hash? *h*) : Any -> Boolean  
+Returns #t if *h* is a Hash, #f otherwise.
+
+(hash-hash-key? *h* *k*) : Hash -> Any -> Boolean  
+Returns #t if *k* is a key in Hash *h*, #f otherwise. 
+
+(hash-remove! *h* *k*) : Hash -> Any -> Void
+Removes any existing mapping for *k* in *h*.
+
+(hash-clear! *h*) : Hash -> Void
+Removes all mappings from *h*.
+
+(hash-keys-subset? *h1* *h2*) : Hash -> Hash -> Boolean
+Returns #t if the keys of *h1* are a subset of or the same as the keys of *h2*. 
+
+(hash-count *h*) : Hash -> Int
+Returns the number of keys mapped by *h*.
+
 
 ## Runtime Errors
 Exception handling for the following run-time errors are added in at
