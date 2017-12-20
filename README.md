@@ -223,16 +223,16 @@ Returns #t if *h* is a Hash, #f otherwise.
 (hash-hash-key? *h* *k*) : Hash -> Any -> Boolean  
 Returns #t if *k* is a key in Hash *h*, #f otherwise. 
 
-(hash-remove! *h* *k*) : Hash -> Any -> Void
+(hash-remove! *h* *k*) : Hash -> Any -> Void  
 Removes any existing mapping for *k* in *h*.
 
-(hash-clear! *h*) : Hash -> Void
+(hash-clear! *h*) : Hash -> Void  
 Removes all mappings from *h*.
 
-(hash-keys-subset? *h1* *h2*) : Hash -> Hash -> Boolean
+(hash-keys-subset? *h1* *h2*) : Hash -> Hash -> Boolean  
 Returns #t if the keys of *h1* are a subset of or the same as the keys of *h2*. 
 
-(hash-count *h*) : Hash -> Int
+(hash-count *h*) : Hash -> Int  
 Returns the number of keys mapped by *h*.
 
 
