@@ -72,6 +72,10 @@ test, you still have access to the binary. If the name of the compiled program
 was "example.scm", a binary in your current directory will be created called
 "example."
 
+Below is an image showing the usage of tests.rkt:
+
+![Command-Line Usage](testing-example.JPG)
+
 ## Accepted Grammar
 
 The following is the grammar that the compiler supports:
@@ -209,9 +213,9 @@ hash and an *f* is not provided, "library run-time error: Key is
 not found in the hash" is thrown. If the key is not in
 the hash and an *f* is provided, *f* is returned. 
 
-(hash-set! h k v) : Hash -> Any -> Any -> Void  
-Mutably changes the hash by creating or replacing an entry in the Hash h, where
-k is the new key and v is the new value. 
+(hash-set! *h* *k* *v*) : Hash -> Any -> Any -> Void  
+Mutably changes the hash by creating or replacing an entry in the Hash *h*, where
+*k* is the new key and *v* is the new value. 
 
 
 ## Runtime Errors
@@ -224,7 +228,7 @@ tests are located in tests/release/ they are div-by-zero-0.scm
 and div-by-zero-1.scm
 2. Memory Cap: A memory cap of 256MB is in place. If that limit is exceeded, an
    error is thrown. The error is "library run-time error: Ran out of memory. 
-Memory cap is 256MB." The relevant tests are located in tests/release/ they are
+Memory cap is 256MB." The relevant tests are located in tests/release/ they are  
 memory-ackermann.scm and memory-infinite.scm
 3. Unbound Variables: If a variable is attempted to be accessed before it is
    bound to a value, an error is thrown. The error is "library run-time error:
